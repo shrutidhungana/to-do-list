@@ -44,6 +44,7 @@ const editTask = (title,id) => {
         clearList,
         findItem,
         editItem,
+        editTask
       
       }}>
       {props.children}
