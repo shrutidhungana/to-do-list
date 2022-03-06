@@ -1,45 +1,53 @@
-import React, {useContext, useState} from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { TaskListContext } from '../context/TaskListContext'
 
-const Taskform = () => {
-   const{addTask} = useContext(TaskListContext)
+const TaskForm = () => {
+  const { addTask, clearList, editTask, editItem } = useContext(TaskListContext)
+  const [title, setTitle] = useState('')
 
-   const [title, setTitle] = useState('')
-
-   const handleChange = e => {
-       setTitle (e.target.value);
-}
-
-   const handleSubmit = e => {
-      e.preventDefault() 
+  const handleSubmit = e => {
+    e.preventDefault()
+    if (!editItem) {
       addTask(title)
-      setTitle("")
+      setTitle('')
+    } else {
+      editTask(title, editItem.id)
+    }
+  }
+
+  const handleChange = e => {
+    setTitle(e.target.value)
+  }
+
+  useEffect(() => {
+    if (editItem) {
+      setTitle(editItem.title)
+      console.log(editItem)
+    } else {
+      setTitle('')
+    }
+  }, [editItem])
+
+  return (
+    <form onSubmit={handleSubmit} className="form">
+      <input
+        type="text"
+        placeholder="Add Task..."
+        value={title}
+        onChange={handleChange}
+        required
+        className="task-input"
+      />
+      <div className="buttons">
+        <button type="submit" className="btn add-task-btn">
+          {editItem ? 'Edit Task' : 'Add Task'}
+        </button>
+        <button className="btn clear-btn" onClick={clearList}>
+          Clear
+        </button>
+      </div>
+    </form>
+  )
 }
-   
-   
 
-    return (
-       <form onSubmit={handleSubmit} className= "form">
-       <input
-       onChange= {handleChange}
-       value= {title}
-        type= "text" 
-       className= "task-input"
-       placeholder= "Add Task.." 
-       required
-       />
-       <div className= "buttons">
-       <button type= "submit" className= "btn add-task-btn">
-       Add Task
-       </button>
-       <button type= "submit" className= "btn clear-btn">
-       Clear
-       </button>
-
-       </div>
-       </form>
-            
-    )
-}
-
-export default Taskform
+export default TaskForm
